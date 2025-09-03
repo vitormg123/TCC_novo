@@ -1,0 +1,58 @@
+extends ../layouts/main
+
+block content
+  .container.mt-4
+    .d-flex.justify-content-between.align-items-center.mb-4
+      h1 Produtos
+      if user && user.tipo === 'admin'
+        a.btn.btn-primary(href='/produtos/novo') Novo Produto
+    
+    .row
+      each produto in produtos
+        .col-md-4.mb-4
+          .card.h-100
+            if produto.imagem
+              img.card-img-top(src=produto.imagem alt=produto.nome style='height: 200px; object-fit: cover;')
+            .card-body
+              h5.card-title= produto.nome
+              p.card-text= produto.descricao.slice(0, 100) + '...'
+              .d-flex.justify-content-between.align-items-center
+                span.h5.text-primary R$ #{produto.preco.toFixed(2)}
+                if produto.desconto > 0
+                  span.badge.bg-success #{produto.desconto}% OFF
+              
+              .mt-3
+                span.badge.bg-secondary= produto.Categoria.nome
+                span.badge.bg-info.ms-2= produto.tamanho
+            
+            .card-footer
+              .d-flex.justify-content-between
+                a.btn.btn-sm.btn-outline-primary(href=`/produtos/${produto.id}`) Ver Detalhes
+                if user && user.tipo === 'admin'
+                  .btn-group
+                    a.btn.btn-sm.btn-outline-secondary(href=`/produtos/editar/${produto.id}`) Editar
+                    button.btn.btn-sm.btn-outline-danger(type='button' onclick=`deleteProduct(${produto.id})`) Excluir
+
+    if produtos.length === 0
+      .alert.alert-info Nenhum produto encontrado.
+
+block scripts
+  if user && user.tipo === 'admin'
+    script.
+      function deleteProduct(id) {
+        if (confirm('Tem certeza que deseja excluir este produto?')) {
+          fetch(`/api/produtos/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert('Erro ao excluir produto');
+            }
+          });
+        }
+      }
