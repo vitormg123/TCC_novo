@@ -1,0 +1,30 @@
+//- Partial para exibir mensagens flash de alerta
+if messages
+  .container.mt-3
+    if messages.error
+      each msg in Array.isArray(messages.error) ? messages.error : [messages.error]
+        .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+          i.bi.bi-exclamation-triangle-fill.me-2
+          | #{msg}
+          button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+    
+    if messages.success
+      each msg in Array.isArray(messages.success) ? messages.success : [messages.success]
+        .alert.alert-success.alert-dismissible.fade.show(role='alert')
+          i.bi.bi-check-circle-fill.me-2
+          | #{msg}
+          button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+    
+    if messages.warning
+      each msg in Array.isArray(messages.warning) ? messages.warning : [messages.warning]
+        .alert.alert-warning.alert-dismissible.fade.show(role='alert')
+          i.bi.bi-exclamation-triangle-fill.me-2
+          | #{msg}
+          button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+    
+    if messages.info
+      each msg in Array.isArray(messages.info) ? messages.info : [messages.info]
+        .alert.alert-info.alert-dismissible.fade.show(role='alert')
+          i.bi.bi-info-circle-fill.me-2
+          | #{msg}
+          button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')

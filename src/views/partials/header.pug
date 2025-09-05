@@ -1,0 +1,65 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+  .container
+    a.navbar-brand(href='/')
+      i.bi.bi-shop.me-2
+      | Sistema CRUD
+    
+    button.navbar-toggler(
+      type='button'
+      data-bs-toggle='collapse'
+      data-bs-target='#navbarNav'
+    )
+      span.navbar-toggler-icon
+    
+    #navbarNav.collapse.navbar-collapse
+      ul.navbar-nav.me-auto
+        li.nav-item
+          a.nav-link(href='/produtos')
+            i.bi.bi-grid.me-1
+            | Produtos
+        li.nav-item
+          a.nav-link(href='/categorias')
+            i.bi.bi-tags.me-1
+            | Categorias
+      
+      ul.navbar-nav
+        if user
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle(
+              href='#'
+              role='button'
+              data-bs-toggle='dropdown'
+            )
+              i.bi.bi-person-circle.me-1
+              | #{user.nome}
+            ul.dropdown-menu
+              li
+                a.dropdown-item(href='/perfil')
+                  i.bi.bi-person.me-2
+                  | Meu Perfil
+              if user.tipo === 'admin'
+                li
+                  hr.dropdown-divider
+                li
+                  a.dropdown-item(href='/admin')
+                    i.bi.bi-gear.me-2
+                    | Administração
+                li
+                  a.dropdown-item(href='/admin/usuarios')
+                    i.bi.bi-people.me-2
+                    | Gerenciar Usuários
+              li
+                hr.dropdown-divider
+              li
+                a.dropdown-item(href='/auth/logout')
+                  i.bi.bi-box-arrow-right.me-2
+                  | Sair
+        else
+          li.nav-item
+            a.nav-link(href='/auth/login')
+              i.bi.bi-box-arrow-in-right.me-1
+              | Login
+          li.nav-item
+            a.nav-link(href='/auth/register')
+              i.bi.bi-person-plus.me-1
+              | Cadastrar

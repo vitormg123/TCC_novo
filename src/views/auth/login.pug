@@ -1,0 +1,102 @@
+extends ../layouts/main
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6
+        .card
+          .card-header
+            h3.text-center
+              i.bi.bi-box-arrow-in-right.me-2
+              | Login
+          
+          .card-body
+            if messages.error
+              .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+                | #{messages.error}
+                button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+            
+            if messages.success
+              .alert.alert-success.alert-dismissible.fade.show(role='alert')
+                | #{messages.success}
+                button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+            
+            form#loginForm(method='POST' action='/auth/login')
+              .mb-3
+                label.form-label(for='email') Email
+                input#email.form-control(
+                  type='email'
+                  name='email'
+                  required
+                  placeholder='seu@email.com'
+                  value=formData ? formData.email : ''
+                )
+                .invalid-feedback Por favor, informe um email válido.
+              
+              .mb-3
+                label.form-label(for='senha') Senha
+                .input-group
+                  input#senha.form-control(
+                    type='password'
+                    name='senha'
+                    required
+                    placeholder='Sua senha'
+                  )
+                  button.btn.btn-outline-secondary(type='button' onclick='togglePassword("senha")')
+                    i.bi.bi-eye
+                .invalid-feedback Por favor, informe sua senha.
+              
+              .mb-3.form-check
+                input#lembrar.form-check-input(type='checkbox' name='lembrar')
+                label.form-check-label(for='lembrar') Lembrar-me
+              
+              .d-grid.gap-2
+                button.btn.btn-primary.btn-lg(type='submit')
+                  i.bi.bi-box-arrow-in-right.me-2
+                  | Entrar
+              
+              .text-center.mt-3
+                a.text-decoration-none(href='/auth/register') 
+                  | Não tem uma conta? Cadastre-se
+              
+              .text-center.mt-2
+                a.text-decoration-none(href='/auth/forgot-password') 
+                  | Esqueceu sua senha?
+
+block scripts
+  script.
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+    }
+
+    // Validação do formulário
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      const form = e.target;
+      
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    });
+
+    // Preencher dados salvos localmente
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedEmail = localStorage.getItem('rememberedEmail');
+      if (savedEmail) {
+        document.getElementById('email').value = savedEmail;
+        document.getElementById('lembrar').checked = true;
+      }
+    });

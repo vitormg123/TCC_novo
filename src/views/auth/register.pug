@@ -1,0 +1,192 @@
+extends ../layouts/main
+
+block content
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-8
+        .card
+          .card-header
+            h3.text-center
+              i.bi.bi-person-plus.me-2
+              | Criar Conta
+          
+          .card-body
+            if messages.error
+              .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+                | #{messages.error}
+                button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+            
+            if messages.success
+              .alert.alert-success.alert-dismissible.fade.show(role='alert')
+                | #{messages.success}
+                button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+            
+            form#registerForm(method='POST' action='/auth/register' novalidate)
+              .row
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='nome') Nome Completo *
+                    input#nome.form-control(
+                      type='text'
+                      name='nome'
+                      required
+                      placeholder='Seu nome completo'
+                      value=formData ? formData.nome : ''
+                      minlength='2'
+                      maxlength='100'
+                    )
+                    .invalid-feedback Por favor, informe seu nome completo (mínimo 2 caracteres).
+                
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='email') Email *
+                    input#email.form-control(
+                      type='email'
+                      name='email'
+                      required
+                      placeholder='seu@email.com'
+                      value=formData ? formData.email : ''
+                    )
+                    .invalid-feedback Por favor, informe um email válido.
+              
+              .row
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='senha') Senha *
+                    .input-group
+                      input#senha.form-control(
+                        type='password'
+                        name='senha'
+                        required
+                        placeholder='Mínimo 6 caracteres'
+                        minlength='6'
+                        pattern='^(?=.*[A-Za-z])(?=.*\\d).{6,}$'
+                      )
+                      button.btn.btn-outline-secondary(type='button' onclick='togglePassword("senha")')
+                        i.bi.bi-eye
+                    .invalid-feedback A senha deve ter pelo menos 6 caracteres, incluindo letras e números.
+                    .form-text A senha deve conter pelo menos 6 caracteres, incluindo letras e números.
+                
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='confirmarSenha') Confirmar Senha *
+                    .input-group
+                      input#confirmarSenha.form-control(
+                        type='password'
+                        name='confirmarSenha'
+                        required
+                        placeholder='Digite novamente sua senha'
+                      )
+                      button.btn.btn-outline-secondary(type='button' onclick='togglePassword("confirmarSenha")')
+                        i.bi.bi-eye
+                    .invalid-feedback As senhas devem ser iguais.
+              
+              .row
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='telefone') Telefone
+                    input#telefone.form-control(
+                      type='tel'
+                      name='telefone'
+                      placeholder='(11) 99999-9999'
+                      value=formData ? formData.telefone : ''
+                    )
+                    .invalid-feedback Por favor, informe um telefone válido.
+                
+                .col-md-6
+                  .mb-3
+                    label.form-label(for='dataNascimento') Data de Nascimento
+                    input#dataNascimento.form-control(
+                      type='date'
+                      name='dataNascimento'
+                      value=formData ? formData.dataNascimento : ''
+                    )
+              
+              .mb-3
+                label.form-label(for='endereco') Endereço
+                textarea#endereco.form-control(
+                  name='endereco'
+                  rows='3'
+                  placeholder='Seu endereço completo'
+                )= formData ? formData.endereco : ''
+              
+              .mb-3.form-check
+                input#termos.form-check-input(
+                  type='checkbox'
+                  name='termos'
+                  required
+                )
+                label.form-check-label(for='termos')
+                  | Aceito os 
+                  a(href='/termos' target='_blank') termos e condições
+                  |  de uso.
+                .invalid-feedback Você deve aceitar os termos e condições.
+              
+              .d-grid.gap-2
+                button.btn.btn-success.btn-lg(type='submit')
+                  i.bi.bi-person-plus.me-2
+                  | Criar Conta
+              
+              .text-center.mt-3
+                a.text-decoration-none(href='/auth/login') 
+                  | Já tem uma conta? Faça login
+
+block scripts
+  script.
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+    }
+
+    // Validação do formulário
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      const form = e.target;
+      const senha = document.getElementById('senha');
+      const confirmarSenha = document.getElementById('confirmarSenha');
+      
+      // Verificar se as senhas coincidem
+      if (senha.value !== confirmarSenha.value) {
+        confirmarSenha.setCustomValidity('As senhas devem ser iguais');
+      } else {
+        confirmarSenha.setCustomValidity('');
+      }
+      
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    });
+
+    // Validar confirmação de senha em tempo real
+    document.getElementById('confirmarSenha').addEventListener('input', function() {
+      const senha = document.getElementById('senha');
+      if (this.value !== senha.value) {
+        this.setCustomValidity('As senhas devem ser iguais');
+      } else {
+        this.setCustomValidity('');
+      }
+    });
+
+    // Máscara para telefone
+    document.getElementById('telefone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      
+      if (value.length <= 11) {
+        value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+      }
+      
+      e.target.value = value;
+    });

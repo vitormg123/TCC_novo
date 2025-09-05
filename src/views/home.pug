@@ -1,0 +1,46 @@
+extends layouts/main
+
+block content
+  .container.mt-5
+    .row
+      .col-lg-8.mx-auto.text-center
+        h1.display-4.mb-4 Bem-vindo ao Sistema CRUD
+        p.lead.mb-4 Sistema completo de gerenciamento de produtos com autenticação JWT, MySQL e interface responsiva.
+        
+        if user
+          .d-grid.gap-2.d-md-flex.justify-content-md-center
+            a.btn.btn-primary.btn-lg.me-md-2(href='/dashboard')
+              i.bi.bi-speedometer2.me-2
+              | Dashboard
+            a.btn.btn-outline-secondary.btn-lg(href='/produtos')
+              i.bi.bi-grid.me-2
+              | Ver Produtos
+        else
+          .d-grid.gap-2.d-md-flex.justify-content-md-center
+            a.btn.btn-primary.btn-lg.me-md-2(href='/auth/login')
+              i.bi.bi-box-arrow-in-right.me-2
+              | Fazer Login
+            a.btn.btn-success.btn-lg(href='/auth/register')
+              i.bi.bi-person-plus.me-2
+              | Criar Conta
+        
+        .mt-5
+          .row
+            .col-md-4
+              .card
+                .card-body
+                  i.bi.bi-shield-check.text-primary.fs-1
+                  h5 Segurança JWT
+                  p Autenticação segura com tokens JSON Web Token
+            .col-md-4
+              .card
+                .card-body
+                  i.bi.bi-database.text-success.fs-1
+                  h5 MySQL
+                  p Banco de dados relacional com Sequelize ORM
+            .col-md-4
+              .card
+                .card-body
+                  i.bi.bi-phone.text-info.fs-1
+                  h5 Responsivo
+                  p Interface adaptável para todos os dispositivos
